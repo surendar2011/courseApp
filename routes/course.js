@@ -64,7 +64,7 @@ courseRouter.get("/preview", async function(req,res) {
 // Export the courseRouter so it can be imported and used in other parts of the application
 module.exports = {
     courseRouter: courseRouter
-};
+}; 
 
 /*
 1. import router from express, courserouter, purchasemodel, coursemodel, usermiddleware

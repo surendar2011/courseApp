@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Sign In</title>
+    <style>
+        :root {
+            --bg-color: white;
+            --text-color: black;
+            --card-bg: #f9f9f9;
+            --border-color: #ddd;
+            --primary-color: #007bff;
+            --hover-color: #0056b3;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: white;
+            --card-bg: #2d2d2d;
+            --border-color: #444;
+            --primary-color: #0056b3;
+            --hover-color: #003d82;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--hover-color);
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>User Sign In</h2>
+        <form id="userSigninForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Sign In</button>
+            <div class="message" id="message"></div>
+        </form>
+        <div class="signup-link">
+            Don't have an account? <a href="/user/usersignup">Sign Up</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('userSigninForm');
+            const messageDiv = document.getElementById('message');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                messageDiv.textContent = 'Signing in...';
+                messageDiv.style.color = '#555';
+
+                try {
+                    const res = await fetch('/user/signin', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        messageDiv.style.color = 'green';
+                        messageDiv.textContent = 'Sign in successful!';
+
+                        if (data.token) {
+                            // Store token in localStorage and sessionStorage for redundancy
+                            localStorage.setItem('userToken', data.token);
+                            sessionStorage.setItem('userToken', data.token);
+                            console.log('Token stored successfully');
+                        }
+
+                        setTimeout(() => {
+                            window.location.href = '/user/userdashboard';
+                        }, 1000);
+                    } else {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = data.message || 'Sign in failed';
+                    }
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Error connecting to server';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

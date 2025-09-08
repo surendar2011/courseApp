@@ -5,10 +5,3 @@ module.exports = {
     JWT_ADMIN_PASSWORD,
     JWT_USER_PASSWORD
 }
-
-
-/*
-1. var for admin password points to user password
-2. var for user password points to admin password
-3. export the module.
-*/

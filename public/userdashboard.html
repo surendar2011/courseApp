@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --primary-color: #007bff;
+            --hover-color: #0056b3;
+            --success-color: #28a745;
+            --success-hover: #218838;
+            --logout-color: #dc3545;
+            --logout-hover: #c82333;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444444;
+            --primary-color: #0056b3;
+            --hover-color: #003d82;
+            --success-color: #218838;
+            --success-hover: #1e7e34;
+            --logout-color: #c82333;
+            --logout-hover: #a71e2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        @media (min-width: 768px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .welcome {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .welcome {
+                text-align: left;
+            }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        @media (min-width: 576px) {
+            .controls {
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        .search-bar {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .theme-toggle, .my-courses-btn, .logout-btn {
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .theme-toggle, .my-courses-btn {
+            background: var(--primary-color);
+        }
+
+        .theme-toggle:hover, .my-courses-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-1px);
+        }
+
+        .logout-btn {
+            background: var(--logout-color);
+        }
+
+        .logout-btn:hover {
+            background: var(--logout-hover);
+            transform: translateY(-1px);
+        }
+
+        .user-info {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .user-info p {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .courses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .courses-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 576px) {
+            .course-grid {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            }
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .course-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            flex: 1;
+        }
+
+        .course-price {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-left: 15px;
+        }
+
+        .course-description {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .purchase-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .purchase-btn:hover {
+            background: var(--success-hover);
+        }
+
+        .purchased-badge {
+            background: var(--success-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="welcome">User Dashboard</h1>
+            <div class="controls">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
+                <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+                <button class="my-courses-btn" onclick="window.location.href='/user/mycourses'">📚 My Courses</button>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+
+        <div id="userInfo" class="user-info"></div>
+        
+        <div class="courses-header">
+            <h2 id="coursesTitle">Available Courses</h2>
+        </div>
+        
+        <div id="coursesList" class="course-grid"></div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+            document.body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️ Light Mode';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        });
+
+        // Get authentication token
+        function getAuthToken() {
+            return localStorage.getItem('userToken') || 
+                   sessionStorage.getItem('userToken') || 
+                   null;
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userToken');
+                sessionStorage.removeItem('userToken');
+                window.location.href = '/user/usersignin';
+            }
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        let allCourses = [];
+        let purchasedCourseIds = [];
+        let userInfo = null;
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredCourses = allCourses.filter(course => 
+                course.title.toLowerCase().includes(searchTerm) ||
+                course.description.toLowerCase().includes(searchTerm)
+            );
+            displayCourses(filteredCourses);
+        });
+
+        // Dashboard data loading
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = getAuthToken();
+            
+            if (!token) {
+                alert('Please sign in first');
+                window.location.href = '/user/usersignin';
+                return;
+            }
+
+            try {
+                // Load user information
+                const userInfoResponse = await fetch('/user/userinfo', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (userInfoResponse.ok) {
+                    userInfo = await userInfoResponse.json();
+                    displayUserInfo(userInfo);
+                }
+
+                // Load user purchased courses
+                const userResponse = await fetch('/user/purchases', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    purchasedCourseIds = userData.purchases.map(course => course._id.toString());
+                    // Update user info with purchased courses count
+                    if (userInfo) {
+                        displayUserInfo(userInfo);
+                    }
+                }
+
+                // Load all courses
+                const coursesResponse = await fetch('/user/courses', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (coursesResponse.ok) {
+                    const data = await coursesResponse.json();
+                    allCourses = data.courses;
+                    displayCourses(allCourses);
+                } else {
+                    alert('Error loading courses');
+                }
+            } catch (error) {
+                console.error('Dashboard error:', error);
+                alert('Error loading dashboard');
+            }
+        });
+
+        function displayUserInfo(user) {
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                <h2>User Information</h2>
+                <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Total Courses Purchased:</strong> ${purchasedCourseIds.length}</p>
+            `;
+        }
+
+        function displayCourses(courses) {
+            const coursesList = document.getElementById('coursesList');
+            const coursesTitle = document.getElementById('coursesTitle');
+            
+            coursesTitle.textContent = `Available Courses (${courses.length})`;
+            
+            if (courses.length > 0) {
+                const coursesHtml = courses.map(course => {
+                    const youtubeId = extractYoutubeId(course.imageUrl);
+                    const embedUrl = youtubeId ? `https://www.youtube.com/embed/${youtubeId}` : '';
+                    const isPurchased = purchasedCourseIds.includes(course._id.toString());
+                    
+                    return `
+                    <div class="course-card">
+                        <div class="course-header">
+                            <h3 class="course-title">${course.title}</h3>
+                            <span class="course-price">$${course.price}</span>
+                        </div>
+                        <p class="course-description">${course.description}</p>
+                        ${embedUrl ? `
+                        <div class="video-container">
+                            <iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        ` : ''}
+                        ${isPurchased ? 
+                            '<div class="purchased-badge">✅ Purchased</div>' : 
+                            `<button class="purchase-btn" onclick="purchaseCourse('${course._id}')">Purchase Course</button>`
+                        }
+                    </div>
+                `}).join('');
+                coursesList.innerHTML = coursesHtml;
+            } else {
+                coursesList.innerHTML = '<p class="no-courses">No courses available.</p>';
+            }
+        }
+
+        function extractYoutubeId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        async function purchaseCourse(courseId) {
+            if (!confirm('Are you sure you want to purchase this course?')) return;
+
+            const token = getAuthToken();
+            
+            try {
+                const response = await fetch(`/user/purchase/${courseId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Course purchased successfully!');
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Failed to purchase course');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                alert('Error purchasing course');
+            }
+        }
+    </script>
+</body>
+</html>
